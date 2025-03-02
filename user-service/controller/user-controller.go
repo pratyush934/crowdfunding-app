@@ -21,7 +21,7 @@ func Register(context *gin.Context) {
 		UserName: input.UserName,
 		Email:    input.Email,
 		Password: input.Password,
-		RoleID:   2,
+		RoleId:   2,
 	}
 
 	save, err := user.Save()
@@ -122,7 +122,7 @@ func GetUser(context *gin.Context) {
 	})
 }
 
-func updateUser(ctx *gin.Context) {
+func UpdateUser(ctx *gin.Context) {
 
 	var updatedUser models.User
 

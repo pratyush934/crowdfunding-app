@@ -12,16 +12,16 @@ import (
 
 type User struct {
 	ID            uuid.UUID `gorm:"type:char(36);primary_key"`
-	UserName      string    `gorm:"type:varchar(100);not null;unique"`
+	UserName      string    `gorm:"type:varchar(100);not null"`
 	Email         string    `gorm:"type:varchar(100);not null;unique"`
 	Password      string    `gorm:"type:longtext;not null"`
-	Phone         string    `gorm:"type:varchar(10);unique"`
-	WalletAddress string    `gorm:"type:varchar(191);not null;unique"`
-	PublicKey     string    `gorm:"type:longtext;not null"`
+	Phone         string    `gorm:"type:varchar(10)"`
+	WalletAddress string    `gorm:"type:varchar(191)"`
+	PublicKey     string    `gorm:"type:longtext"`
 	KYCStatus     string    `gorm:"type:varchar(191);default:'pending'"`
-	GovtIDHash    string    `gorm:"type:longtext;not null"`
-	RoleID        int64     `gorm:"foreignKey:RoleId;default:2"`
-	Role          Role      `gorm:"foreignKey:RoleId"`
+	GovtIDHash    string    `gorm:"type:longtext"`
+	RoleId        int64     `gorm:"not null"`
+	Role          Role      `gorm:"foreignKey:RoleId;references:ID"`
 	TokenBalance  float64   `gorm:"default:0"`
 	BondID        string    `gorm:"type:json"`
 	StakingAmount float64   `gorm:"default:0"`

@@ -18,7 +18,7 @@ func GenerateJWT(user models.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   user.ID,
-		"role": user.RoleID,
+		"role": user.RoleId,
 		"iat":  time.Now().Unix(),
 		"eat":  time.Now().Add(time.Second * time.Duration(tokenTTL)).Unix(),
 	})
@@ -27,18 +27,17 @@ func GenerateJWT(user models.User) (string, error) {
 
 func ValidateToken(context *gin.Context) error {
 	token, err := getToken(context)
-
 	if err != nil {
-		fmt.Println("Error occurred in validateToken method in jwt.go file")
+		fmt.Println("Error in ValidateToken:", err)
 		return err
 	}
 
-	_, claims := token.Claims.(jwt.MapClaims)
-
-	if claims && token.Valid {
-		return nil
+	_, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return errors.New("invalid token")
 	}
-	return errors.New("issue still exist in the validateToken method in jwt.go")
+
+	return nil
 }
 
 func validateAdminRole(ctx *gin.Context) error {
@@ -103,6 +102,8 @@ func currentUser(ctx *gin.Context) (models.User, error) {
 func getToken(ctx *gin.Context) (*jwt.Token, error) {
 	token, err := getTokenFromHeader(ctx)
 
+	//fmt.Println("Second time", token)
+
 	if err != nil {
 		fmt.Println("Error exist in the getToken method in jwt.go")
 		return nil, err
@@ -116,7 +117,11 @@ func getToken(ctx *gin.Context) (*jwt.Token, error) {
 		return privateKey, nil
 	})
 
-	return parsedToken, errors.New("issue still exist in the function name getToken in jwt.go")
+	if err != nil {
+		return nil, err
+	}
+
+	return parsedToken, nil
 }
 
 func getTokenFromHeader(ctx *gin.Context) (string, error) {
@@ -124,8 +129,10 @@ func getTokenFromHeader(ctx *gin.Context) (string, error) {
 
 	splitToken := strings.Split(bearerToken, " ")
 
-	if len(splitToken) == 2 {
-		return splitToken[1], nil
+	//fmt.Println(splitToken[1], "------->This is the first time")
+
+	if len(splitToken) != 2 {
+		return "", nil
 	}
-	return "", errors.New("issue exist in the function getTokenFromHeader in jwt.go")
+	return splitToken[1], nil
 }

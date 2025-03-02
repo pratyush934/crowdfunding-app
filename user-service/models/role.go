@@ -9,7 +9,6 @@ type Role struct {
 	ID          int64  `gorm:"primary_key"`
 	Name        string `gorm:"type:varchar(10);default:'user'"`
 	Description string `gorm:"type:varchar(100)"`
-	User        *User  `gorm:"foreignKey:RoleId"`
 }
 
 func CreateRole(role *Role) error {
