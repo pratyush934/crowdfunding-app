@@ -26,7 +26,7 @@ func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 func (t *Transaction) Save() (*Transaction, error) {
-	err := dbBond.DB.Create(&t).Error
+	err := dbBond.DB.Save(&t).Error
 
 	if err != nil {
 		fmt.Println("There is an error in the Save method in transaction.go/bond-service")
@@ -34,4 +34,34 @@ func (t *Transaction) Save() (*Transaction, error) {
 	}
 
 	return t, nil
+}
+
+func Update(t *Transaction) (*Transaction, error) {
+	err := dbBond.DB.Save(&t).Error
+
+	if err != nil {
+		fmt.Println("There is an error in the Update method in transaction.go/bond-service")
+		return &Transaction{}, err
+	}
+	return t, nil
+}
+
+func GetTransactions(t *[]Transaction) error {
+	err := dbBond.DB.Find(&t).Error
+
+	if err != nil {
+		fmt.Println("There is an error in GetTransactions method in transaction.go/bond-service")
+		return err
+	}
+	return nil
+}
+
+func GetTransactionById(t *Transaction, id string) error {
+	err := dbBond.DB.Where("id=?", id).First(&t).Error
+
+	if err != nil {
+		fmt.Println("There is an error in GetTransaction method in transaction.go/bond-service")
+		return err
+	}
+	return nil
 }
